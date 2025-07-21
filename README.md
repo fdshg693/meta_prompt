@@ -11,7 +11,7 @@ Github Copilot Chatに与えるプロンプトを自動生成するためのプ�
 3. `/requirement_analyzer`をGithub Copilot Chatで打ち込みます
 4. `sample`フォルダに生成されたファイルを確認します。
     - `sample/requirement_analysis_report.md`が生成され、要件分析の結果が記述されています。
-    - `sample/questions.md`が存在すれば、必要に応じて`sample/answers.md`を作成して回答を記述します。直接、`sample/requirement_analysis_report.md`を編集しても構いません。
+    - `sample/question{番号}.md`が存在すれば、必要に応じて`sample/answer{番号}.md`を作成して回答を記述します。直接、`sample/requirement_analysis_report.md`を編集しても構いません。
     - `sample/answers.md`を記述した後、再度`/requirement_analyzer`を実行すると、回答を反映した要件分析が行われます。
 5. `/architect_designer`をGithub Copilot Chatで打ち込みます。
     - `sample/architect_design_report.md`が生成され、アーキテクチャ設計の結果が記述されています。
