@@ -1,4 +1,4 @@
-# プロンプトファイルを修正するPowerShellスクリプト
+﻿# プロンプトファイルを修正するPowerShellスクリプト
 #
 # 使用方法:
 #   # PowerShellで実行

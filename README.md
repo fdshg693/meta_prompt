@@ -20,16 +20,19 @@ Github Copilot Chatに与えるプロンプトを自動生成するためのプ�
     - 1回の実行で、最大3ファイルまでの生成が行われるため、必要に応じて複数回実行してください。
 7. `/readme`をGithub Copilot Chatで打ち込みます。
     - `sample/README.md`が生成され、プロジェクトの進め方が記述されています。
-8. `code/`フォルダの配下にある任意のスクリプトを実行しまて、ファイル形式の微修正を行います。
+8. `code/`フォルダの配下にある任意の「modify」スクリプトを実行しまて、ファイル形式の微修正を行います。
     - `sample/prompts/{agent_name}_prompt.md`を元に、`sample/.github/prompts/{agent_name}_prompt.prompt.md`を作成します。
     - `sample/.github/prompts/{agent_name}_prompt.prompt.md`の先頭ファイルに以下の内容を追加します。（Github Copilot Chatのpromptsの形式に合わせるため）
       ```
       ---
       mode: agent
       ---
-      ```    
-9. 任意のフォルダを作成し、`sample/.github`フォルダ全体をコピーします。
+      ```
+             
+9. `code/`フォルダの配下にある任意の「merge」スクリプトを実行しまて、変数ファイルとInstructionsファイルをマージします。
+    - `sample/variables.yaml`と`sample/copilot-instructions.md`をマージして、`sample/.github/copilot-instructions.md`を作成します。
+10. 任意のフォルダを作成し、`sample/.github`フォルダ全体をコピーします。
     - 必要に応じて、`sample/README.md`もコピーすると便利です。
-10. VSCodeで新しいフォルダを開き、Github Copilot Chatを起動して、7.で作成した`sample/README.md`の指示に従い進めます。
+11. VSCodeで新しいフォルダを開き、Github Copilot Chatを起動して、7.で作成した`sample/README.md`の指示に従い進めます。
     - プロンプトを実行する際は、`/{プロンプトファイル名}`のショートカットを入力して実行すると便利です。
    

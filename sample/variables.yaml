@@ -9,13 +9,13 @@ run_number: 1  # 現在の実行回数
 max_files_per_execution: 3  # 一回の実行でのファイル作成上限
 
 ## ユーザー関連変数
-user_name: "{{ユーザー名}}"
-user_level: "{{初級|中級|上級}}"
-learning_goal: "{{学習目標}}"
+user_name: "seiwan"
+user_level: "中級"
+learning_goal: "F#独自の機能を理解し、実践的なスキルを身につける"
 
 ## コンテンツ関連変数
-topic_id: "{{トピックID}}"
-lesson_difficulty: "{{易しい|普通|難しい}}"
+topic_id: "関数型プログラミング"
+lesson_difficulty: "難しい"
 code_example_count: 3  # コード例の数
 
 ## パス関連変数
@@ -32,11 +32,11 @@ code_examples_template: "code_examples_{topic_id}.md"
 progress_file: "progress/feedback_provider_progress.md"
 
 ## 評価関連変数
-assessment_type: "{{知識評価|理解度チェック|総合評価}}"
-feedback_style: "{{建設的|詳細|簡潔}}"
-motivation_level: "{{高|中|低}}"
+assessment_type: "総合評価"
+feedback_style: "詳細"
+motivation_level: "高"
 
 ## 学習計画関連変数
-learning_cycle: "{{初回|継続|調整}}"
+learning_cycle: "初回"
 plan_adjustment_needed: false
 previous_cycle_count: 0
