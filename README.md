@@ -35,4 +35,8 @@ Github Copilot Chatに与えるプロンプトを自動生成するためのプ�
     - 必要に応じて、`sample/README.md`もコピーすると便利です。
 11. VSCodeで新しいフォルダを開き、Github Copilot Chatを起動して、7.で作成した`sample/README.md`の指示に従い進めます。
     - プロンプトを実行する際は、`/{プロンプトファイル名}`のショートカットを入力して実行すると便利です。
-   
+
+## オプション
+- ## 変数ファイルを元に、テンプレート内の変数を置換するスクリプトを実行します。
+    - `code/process_prompt_templates.py`を実行すると、`sample/processed/.github/`に変数が置換されたプロンプトファイルが生成されます。
+    - 詳細の設定は`code\config\paths.json`にて行います

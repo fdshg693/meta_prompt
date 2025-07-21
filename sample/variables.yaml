@@ -5,7 +5,8 @@ project_name: "F#学習フローシステム"
 target_language: "F#"
 
 ## 実行制御変数
-run_number: 1  # 現在の実行回数
+# 毎回の実行で変化するため、あえてコメントアウト
+# run_number: 1  # 現在の実行回数 
 max_files_per_execution: 3  # 一回の実行でのファイル作成上限
 
 ## ユーザー関連変数
@@ -35,6 +36,7 @@ progress_file: "progress/feedback_provider_progress.md"
 assessment_type: "総合評価"
 feedback_style: "詳細"
 motivation_level: "高"
+difficulty_level: "中級"
 
 ## 学習計画関連変数
 learning_cycle: "初回"
