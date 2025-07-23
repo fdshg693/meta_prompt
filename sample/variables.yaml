@@ -1,44 +1,33 @@
 # 変数定義ファイル
 
-## プロジェクト基本情報
-project_name: "F#学習フローシステム"
-target_language: "F#"
+# プロジェクト設定
+project_root: "{{project_root}}"                    # プロジェクトのルートディレクトリパス
+task_type: "{{task_type}}"                          # タスクタイプ (programming|bugfix|feature)
+max_retry_count: "{{max_retry_count}}"              # 最大リトライ回数 (デフォルト: 3)
 
-## 実行制御変数
-# 毎回の実行で変化するため、あえてコメントアウト
-# run_number: 1  # 現在の実行回数 
-max_files_per_execution: 3  # 一回の実行でのファイル作成上限
+# 実行制御
+run_number: "{{run_number}}"                        # 現在の実行回数 (1から開始)
+max_execution_time: "{{max_execution_time}}"        # 最大実行時間 (分)
+auto_continue: "{{auto_continue}}"                  # 自動継続フラグ (true|false)
 
-## ユーザー関連変数
-user_name: "seiwan"
-user_level: "中級"
-learning_goal: "F#独自の機能を理解し、実践的なスキルを身につける"
+# ユーザー設定
+user_skill_level: "{{user_skill_level}}"            # ユーザースキルレベル (beginner|intermediate|advanced)
+detailed_logging: "{{detailed_logging}}"            # 詳細ログ出力フラグ (true|false)
+progress_notification: "{{progress_notification}}"  # 進捗通知フラグ (true|false)
 
-## コンテンツ関連変数
-topic_id: "関数型プログラミング"
-lesson_difficulty: "難しい"
-code_example_count: 3  # コード例の数
+# ファイルパス設定
+input_directory: "{{input_directory}}"              # 入力ディレクトリ (デフォルト: input/)
+output_directory: "{{output_directory}}"            # 出力ディレクトリ (デフォルト: output/)
+state_directory: "{{state_directory}}"              # 状態ディレクトリ (デフォルト: state/)
+logs_directory: "{{logs_directory}}"                # ログディレクトリ (デフォルト: logs/)
+reports_directory: "{{reports_directory}}"          # レポートディレクトリ (デフォルト: reports/)
 
-## パス関連変数
-input_dir: "INPUT"
-data_dir: "data"
-content_dir: "content"
-feedback_dir: "feedback"
-output_dir: "output"
-progress_dir: "progress"
+# 処理設定
+step_size_preference: "{{step_size_preference}}"    # ステップサイズ設定 (small|medium|large)
+error_tolerance: "{{error_tolerance}}"              # エラー許容レベル (strict|normal|lenient)
+code_quality_level: "{{code_quality_level}}"        # コード品質レベル (basic|standard|high)
 
-## ファイル名テンプレート
-lesson_file_template: "lesson_{topic_id}.md"
-code_examples_template: "code_examples_{topic_id}.md"
-progress_file: "progress/feedback_provider_progress.md"
-
-## 評価関連変数
-assessment_type: "総合評価"
-feedback_style: "詳細"
-motivation_level: "高"
-difficulty_level: "中級"
-
-## 学習計画関連変数
-learning_cycle: "初回"
-plan_adjustment_needed: false
-previous_cycle_count: 0
+# 出力設定
+report_language: "{{report_language}}"              # レポート言語 (ja|en)
+include_code_comments: "{{include_code_comments}}"  # コードコメント含有フラグ (true|false)
+summary_detail_level: "{{summary_detail_level}}"    # サマリー詳細レベル (brief|detailed|comprehensive)
