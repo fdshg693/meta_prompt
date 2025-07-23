@@ -1,0 +1,106 @@
+# プロンプト変数定義
+
+## プロジェクト基本情報
+project_name: "大規模コードからドキュメント生成ワークフロー"
+target_domain: "エンタープライズアプリケーション開発"
+project_version: "1.0.0"
+creation_date: "2025-07-23"
+
+## 実行管理変数
+run_number: 1
+max_files_per_run: 3
+current_agent: ""
+total_agents: 5
+
+## パス変数
+input_path: "c:/CodeStudy/meta_prompt/sample"
+output_path: "c:/CodeStudy/meta_prompt/sample"
+temp_path: "c:/CodeStudy/meta_prompt/temp"
+config_path: "c:/CodeStudy/meta_prompt/config"
+log_path: "c:/CodeStudy/meta_prompt/agents"
+docs_path: "c:/CodeStudy/meta_prompt/docs/generated"
+
+## ファイル管理変数
+architect_design_file: "{{input_path}}/architect_design_report.md"
+prompt_history_file: "{{input_path}}/prompt_creation_history.md"
+copilot_instructions_file: "{{input_path}}/copilot-instructions.md"
+variables_file: "{{input_path}}/variables.yaml"
+
+## エージェント定義
+agents:
+  - name: "Configuration Agent"
+    role: "設定管理エージェント"
+    responsibility: "設定ファイル管理、実行制御、リソース管理"
+    prompt_file: "{{input_path}}/prompts/configuration_agent_prompt.md"
+    
+  - name: "File Processing Agent"
+    role: "ファイル処理エージェント"
+    responsibility: "ファイル読み込み、前処理、分割処理"
+    prompt_file: "{{input_path}}/prompts/file_processing_agent_prompt.md"
+    
+  - name: "Code Analysis Agent"
+    role: "コード解析エージェント"
+    responsibility: "コード構造解析、情報抽出"
+    prompt_file: "{{input_path}}/prompts/code_analysis_agent_prompt.md"
+    
+  - name: "Template Generation Agent"
+    role: "テンプレート生成エージェント"
+    responsibility: "ドキュメントテンプレート作成、構造設計"
+    prompt_file: "{{input_path}}/prompts/template_generation_agent_prompt.md"
+    
+  - name: "Documentation Output Agent"
+    role: "ドキュメント出力エージェント"
+    responsibility: "最終ドキュメント生成、品質管理、保存"
+    prompt_file: "{{input_path}}/prompts/documentation_output_agent_prompt.md"
+
+## 処理制限変数
+max_memory_mb: 1024
+max_execution_minutes: 10
+max_lines_per_file: 2000
+max_log_lines: 300
+
+## 対応言語・フォーマット
+supported_languages:
+  - "csharp"
+  - "javascript" 
+  - "typescript"
+
+supported_file_extensions:
+  - ".cs"
+  - ".js"
+  - ".ts"
+  - ".aspx"
+  - ".md"
+  - ".txt"
+  - ".json"
+  - ".yaml"
+
+document_types:
+  - "architecture"
+  - "reference"
+  - "tutorial"
+
+## 出力テンプレート変数
+architecture_template: "{{temp_path}}/templates/architecture_template.md"
+reference_template: "{{temp_path}}/templates/reference_template.md"
+tutorial_template: "{{temp_path}}/templates/tutorial_template.md"
+
+## 品質チェック基準
+min_coverage_rate: 0.8
+min_success_rate: 0.9
+max_error_rate: 0.1
+
+## カスタム設定
+exclude_patterns:
+  - "*.test.js"
+  - "*.spec.ts"
+  - "node_modules/"
+  - ".git/"
+  - "bin/"
+  - "obj/"
+
+priority_directories:
+  - "src/"
+  - "api/"
+  - "core/"
+  - "services/"
