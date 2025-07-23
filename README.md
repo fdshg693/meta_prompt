@@ -1,47 +1,191 @@
-## 概要
-Github Copilot Chatに与えるプロンプトを自動生成するためのプロジェクトです。
+# GitHub Copilot Chat プロンプト自動生成システム
 
-## 必要条件
-- Github Copilot Chatのアカウント
-- VSCodeのインストール
+## プロジェクト概要
 
-## 使い方
-1. このリポジトリをクローンします。
-2. `INPUT\task.md`にタスクを記述します。
-3. `/requirement_analyzer`をGithub Copilot Chatで打ち込みます
-4. `sample`フォルダに生成されたファイルを確認します。
-    - `sample/requirement_analysis_report.md`が生成され、要件分析の結果が記述されています。
-    - `sample/question{番号}.md`が存在すれば、必要に応じて`sample/answer{番号}.md`を作成して回答を記述します。直接、`sample/requirement_analysis_report.md`を編集しても構いません。
-    - `sample/answers.md`を記述した後、再度`/requirement_analyzer`を実行すると、回答を反映した要件分析が行われます。
-5. `/architect_designer`をGithub Copilot Chatで打ち込みます。
-    - `sample/architect_design_report.md`が生成され、アーキテクチャ設計の結果が記述されています。
-6. `/prompt_generator.prompt`をGithub Copilot Chatで打ち込みます。
-    - `sample/prompts/{agent_name}_prompt.md`が生成され、各エージェントのプロンプトが記述されています。
-    - 1回の実行で、最大3ファイルまでの生成が行われるため、必要に応じて複数回実行してください。
-7. `/readme`をGithub Copilot Chatで打ち込みます。
-    - `sample/README.md`が生成され、プロジェクトの進め方が記述されています。
-8. `code/`フォルダの配下にある任意の「modify」スクリプトを実行しまて、ファイル形式の微修正を行います。
-    - `sample/prompts/{agent_name}_prompt.md`を元に、`sample/.github/prompts/{agent_name}_prompt.prompt.md`を作成します。
-    - `sample/.github/prompts/{agent_name}_prompt.prompt.md`の先頭ファイルに以下の内容を追加します。（Github Copilot Chatのpromptsの形式に合わせるため）
-      ```
-      ---
-      mode: agent
-      ---
-      ```
-             
-9. `code/`フォルダの配下にある任意の「merge」スクリプトを実行しまて、変数ファイルとInstructionsファイルをマージします。
-    - `sample/variables.yaml`と`sample/copilot-instructions.md`をマージして、`sample/.github/copilot-instructions.md`を作成します。
-10. 任意のフォルダを作成し、`sample/.github`フォルダ全体をコピーします。
-    - 必要に応じて、`sample/README.md`もコピーすると便利です。
-11. VSCodeで新しいフォルダを開き、Github Copilot Chatを起動して、7.で作成した`sample/README.md`の指示に従い進めます。
-    - 必要なフォルダ構成を作成するには、以下のプロンプトをGithub Copilot Chatで実行することをお勧めします。
-    ```
-    このREADMEの構成になるようにファイルを作成して
-    ファイルの中身は必ず空にして！！！
-    ```
-    - プロンプトを実行する際は、`/{プロンプトファイル名}`のショートカットを入力して実行すると便利です。
+本システムは、ユーザーのタスク入力からGitHub Copilot Chat用プロンプトを自動生成する5つの専門エージェントで構成されたワークフローシステムです。各エージェントは単一責任原則に基づき、段階的に情報を拡充しながら最適なプロンプトセットを生成します。
 
-## オプション
-- ## 変数ファイルを元に、テンプレート内の変数を置換するスクリプトを実行します。
-    - `code/process_prompt_templates.py`を実行すると、`sample/processed/.github/`に変数が置換されたプロンプトファイルが生成されます。
-    - 詳細の設定は`code\config\paths.json`にて行います
+### システムの特徴
+
+- **完全分離型設計**: 各エージェントは独立した専門性を持つ
+- **段階的情報拡充**: 前段の出力が次段の入力となる設計
+- **ループ実行対応**: 全工程の反復実行による継続的改善
+- **ファイルベース連携**: 標準化されたMarkdown形式での情報受け渡し
+
+### エージェント構成
+
+1. **タスク分析エージェント** - ユーザー入力の構造化分析
+2. **情報収集エージェント** - ユーザーとの対話による情報収集
+3. **エージェント選定エージェント** - 最適な実行エージェントの選定
+4. **共通プロンプト生成エージェント** - ベースプロンプトの生成
+5. **個別プロンプト生成エージェント** - エージェント専用プロンプトの生成
+
+## 実行手順
+
+### 事前準備
+
+1. **プロジェクトフォルダの作成**
+   ```
+   mkdir your_project_name
+   cd your_project_name
+   ```
+
+2. **必要なフォルダ構造の作成**
+   ```
+   INPUT/
+   sample/
+   OUTPUT/
+   .github/
+     prompts/
+   ```
+
+3. **プロンプトファイルの配置**
+   - 生成されたプロンプトファイル（`prompts/`フォルダ内）を`.github/prompts/`にコピー
+   - ファイル名を`.prompt.md`拡張子に変更
+   - 各ファイル先頭に以下を追加：
+   ```yaml
+   ---
+   mode: agent
+   ---
+   ```
+
+### ステップ1: タスク分析の実行
+
+1. **タスクの入力**
+   - `INPUT/task.md`にユーザーのタスクを記述
+
+2. **タスク分析エージェントの実行**
+   ```
+   /task_analyzer
+   ```
+   - **出力**: `sample/task_analysis_result.md`
+   - **内容**: タスクの構造化分析と必要情報の特定
+
+### ステップ2: 情報収集の実行
+
+1. **情報収集エージェントの実行**
+   ```
+   /information_collector
+   ```
+   - **出力**: 
+     - `sample/questions_for_user.md` (ユーザーへの質問)
+     - `sample/collected_information.md` (収集した情報の統合)
+
+2. **ユーザー対話の実施**
+   - 生成された質問に回答
+   - 必要に応じて情報収集エージェントを再実行
+
+### ステップ3: エージェント選定の実行
+
+1. **エージェント選定エージェントの実行**
+   ```
+   /agent_selector
+   ```
+   - **入力**: `sample/collected_information.md`
+   - **出力**: `sample/selected_agents_plan.md`
+   - **内容**: 必要なエージェントと実行順序の決定
+
+### ステップ4: 共通プロンプト生成の実行
+
+1. **共通プロンプト生成エージェントの実行**
+   ```
+   /common_prompt_generator
+   ```
+   - **入力**: 
+     - `sample/collected_information.md`
+     - `sample/selected_agents_plan.md`
+   - **出力**: `sample/common_prompt.md`
+   - **内容**: 全エージェント共通のベースプロンプト
+
+### ステップ5: 個別プロンプト生成の実行
+
+1. **個別プロンプト生成エージェントの実行**
+   ```
+   /individual_prompt_generator
+   ```
+   - **入力**: 
+     - `sample/selected_agents_plan.md`
+     - `sample/common_prompt.md`
+   - **出力**: `sample/individual_prompts/[agent_name].prompt.md` (複数ファイル)
+   - **内容**: 各エージェント専用の詳細プロンプト
+
+### ステップ6: 最終統合と実行
+
+1. **プロンプトパッケージの生成**
+   - **出力**: `OUTPUT/generated_prompts_package.md`
+   - **出力**: `OUTPUT/execution_guide.md`
+
+2. **生成されたエージェントの実行**
+   - 各エージェントプロンプトを順次実行
+   - 指定された順序での実行を推奨
+
+## ファイル構成説明
+
+### 入力ファイル
+- `INPUT/task.md` - ユーザーの初期タスク記述
+
+### 中間ファイル（sample/フォルダ）
+| ファイル名 | 生成エージェント | 説明 |
+|-----------|------------------|------|
+| `task_analysis_result.md` | タスク分析 | タスクの構造化分析結果 |
+| `questions_for_user.md` | 情報収集 | ユーザーへの質問リスト |
+| `collected_information.md` | 情報収集 | 収集した情報の統合 |
+| `selected_agents_plan.md` | エージェント選定 | 選定されたエージェントと実行計画 |
+| `common_prompt.md` | 共通プロンプト生成 | 全エージェント共通のベースプロンプト |
+| `individual_prompts/` | 個別プロンプト生成 | 各エージェント専用プロンプト |
+
+### 出力ファイル（OUTPUT/フォルダ）
+- `generated_prompts_package.md` - プロンプト統合ファイル
+- `execution_guide.md` - 実行手順書
+
+### 管理ファイル
+- `execution_history.md` - 実行履歴
+- `version_log.md` - バージョン管理
+- `improvement_log.md` - 改善ログ
+
+## ループ実行による継続的改善
+
+### 改善フロー
+1. **品質評価**: 生成されたプロンプトの品質チェック
+2. **改善要求**: 必要に応じてユーザーが改善を要求
+3. **再実行**: エージェント1から順次再実行
+4. **比較検証**: 前回との比較と改善確認
+
+### 実行制御
+- **継続条件**: ユーザーが改善を要求する場合
+- **終了条件**: ユーザーが最終承認を行う場合
+- **中断条件**: エラーまたは実行不可能な要求の場合
+
+## 注意事項
+
+### エージェント実行順序
+- **必須順序**: 1→2→3→4→5の順序で実行
+- **依存関係**: 各エージェントは前段の出力に依存
+- **並列実行不可**: 順次実行による確実性を重視
+
+### ファイル管理
+- **命名規則**: ステップ番号と内容を反映した名前
+- **バージョン管理**: 必要に応じてタイムスタンプ付与
+- **バックアップ**: 重要な中間ファイルの保持推奨
+
+### エラー対応
+- **検証チェック**: 各段階での出力妥当性確認
+- **部分再実行**: 特定エージェントからの再開可能
+- **ログ確認**: トラブルシューティング用ログの活用
+
+## トラブルシューティング
+
+### よくある問題
+1. **エージェントが見つからない**: プロンプトファイルの配置確認
+2. **出力ファイルが生成されない**: 実行順序と依存関係の確認
+3. **プロンプト品質が低い**: 入力情報の充実度確認
+
+### 解決方法
+1. **ファイル確認**: `.github/prompts/`フォルダ内のファイル配置
+2. **順序確認**: エージェント実行順序の遵守
+3. **情報補完**: 不足情報の追加入力
+
+---
+
+**作成日**: 2025年7月23日  
+**対応プロジェクト**: GitHub Copilot Chat プロンプト自動生成システム  
+**バージョン**: 1.0
