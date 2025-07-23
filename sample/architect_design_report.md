@@ -1,280 +1,213 @@
 # アーキテクト設計レポート
 
-## 📋 プロジェクト概要
-**プロジェクト名**: 大規模コードからドキュメント生成ワークフロー  
-**設計日時**: 2025年7月23日  
-**設計対象**: 要件分析結果に基づくエージェント構成とワークフロー設計
+## 📋 設計概要
+**プロジェクト名**: 要件ベースコード実装ワークフロー  
+**設計日時**: 2025年7月24日  
+**入力ファイル**: `sample/requirement_analysis_report.md`  
+**設計者**: アーキテクト設計エージェント
+
+## 🎯 設計目的
+要件分析結果に基づき、効率的で保守性の高いエージェント構成とワークフローを設計し、ユーザー要件を体系的にコード実装へと変換するシステムアーキテクチャを提案する。
 
 ## 🏗️ エージェント構成概要
 
-### 設計原則に基づく分割戦略
-- **単一責任原則**: 各エージェントは明確に分離された専門領域を担当
-- **効率性**: 最小限のエージェント数（5エージェント）で最大効果を実現
-- **拡張性**: 将来の要件変更に対応しやすい疎結合設計
-- **保守性**: 理解しやすく修正しやすい構造
+### 特定されたエージェント（5つ）
 
-### エージェント数: 5エージェント
-1. **Configuration Agent** (設定管理エージェント)
-2. **File Processing Agent** (ファイル処理エージェント)
-3. **Code Analysis Agent** (コード解析エージェント)
-4. **Template Generation Agent** (テンプレート生成エージェント)
-5. **Documentation Output Agent** (ドキュメント出力エージェント)
+1. **要件確認エージェント** (`requirement_clarifier`)
+2. **対話管理エージェント** (`dialogue_manager`) 
+3. **タスク分析エージェント** (`task_analyzer`)
+4. **実行管理エージェント** (`execution_manager`)
+5. **品質評価エージェント** (`quality_evaluator`)
 
-## 🎯 各エージェントの役割定義
+## 🤖 各エージェントの役割定義
 
-### 1. Configuration Agent (設定管理エージェント)
-**専門領域**: 設定ファイル管理、実行制御、リソース管理
+### 1. 要件確認エージェント (`requirement_clarifier`)
+**専門領域**: 要件の理解と質問生成  
+**主要責任**:
+- ユーザー指定要件の読み込み・分析
+- 詳細・疑問点の特定
+- 構造化された質問の生成
+- 要件の初期検証
 
-**責任範囲**:
-- JSON設定ファイルの読み込み・検証
-- 処理対象ファイル・ディレクトリの特定
-- 除外パターンの適用
-- リソース制限の監視・制御
-- エラー処理方針の設定
+**入力**: `INPUT/task.md`  
+**出力**: `sample/clarification_questions.md`
 
-**入力**:
-- `config/settings.json` (ユーザー設定ファイル)
-- コマンドライン引数・環境変数
+### 2. 対話管理エージェント (`dialogue_manager`)
+**専門領域**: ユーザーとの対話制御  
+**主要責任**:
+- ユーザー回答の受付・記録
+- 追加質問の必要性判定
+- 対話履歴の管理
+- 要件明確化の完了判定
 
-**出力**:
-- `temp/validated_config.json` (検証済み設定)
-- `temp/target_files.json` (処理対象ファイルリスト)
+**入力**: `sample/clarification_questions.md`, `sample/user_answers.md`  
+**出力**: `sample/dialogue_summary.md`, `sample/additional_questions.md`
 
-### 2. File Processing Agent (ファイル処理エージェント)
-**専門領域**: ファイル読み込み、前処理、分割処理
+### 3. タスク分析エージェント (`task_analyzer`)
+**専門領域**: タスク分解と優先度設定  
+**主要責任**:
+- 明確化された要件からタスクへの分解
+- タスクの適切な粒度での設計
+- 優先度の客観的評価・設定
+- 実行可能なタスクリストの生成
 
-**責任範囲**:
-- ターゲットファイルの読み込み
-- 2,000行制限による巨大ファイル分割
-- ファイル形式の検証・識別
-- エンコーディング処理
-- 一時ファイル管理
+**入力**: `sample/dialogue_summary.md`  
+**出力**: `sample/task_breakdown.md`
 
-**入力**:
-- `temp/target_files.json`
-- 実際のソースコードファイル群
+### 4. 実行管理エージェント (`execution_manager`)
+**専門領域**: タスク実行とファイル操作  
+**主要責任**:
+- 高優先度タスクの実行
+- ファイル作成・編集の実装
+- 実行結果の記録・報告
+- エラーハンドリング
 
-**出力**:
-- `temp/processed_files/` (分割済みファイル群)
-- `temp/file_metadata.json` (ファイル情報)
+**入力**: `sample/task_breakdown.md`  
+**出力**: `sample/execution_results.md`, 実装ファイル群
 
-### 3. Code Analysis Agent (コード解析エージェント)
-**専門領域**: コード構造解析、情報抽出
+### 5. 品質評価エージェント (`quality_evaluator`)
+**専門領域**: 品質確認と満足度評価  
+**主要責任**:
+- 実行結果の妥当性確認
+- ユーザー満足度の評価
+- 継続実行の必要性判定
+- 最終品質レポートの生成
 
-**責任範囲**:
-- 言語別構文解析 (C#, JavaScript, TypeScript)
-- 関数/メソッド定義の抽出
-- クラス構造・プロパティの解析
-- API エンドポイントの特定
-- コメント・docstring の抽出
-- 依存関係グラフの生成
-- 型定義・インターフェースの解析
-
-**入力**:
-- `temp/processed_files/`
-- `temp/file_metadata.json`
-
-**出力**:
-- `temp/extracted_info/functions.json`
-- `temp/extracted_info/classes.json`
-- `temp/extracted_info/apis.json`
-- `temp/extracted_info/dependencies.json`
-
-### 4. Template Generation Agent (テンプレート生成エージェント)
-**専門領域**: ドキュメントテンプレート作成、構造設計
-
-**責任範囲**:
-- 設計書・アーキテクチャ文書テンプレート生成
-- 開発者向けリファレンステンプレート作成
-- チュートリアル・FAQ テンプレート設計
-- テンプレート品質チェック
-- カスタムテンプレート対応
-
-**入力**:
-- `temp/extracted_info/` (全抽出情報)
-- `temp/validated_config.json`
-
-**出力**:
-- `temp/templates/architecture_template.md`
-- `temp/templates/reference_template.md`
-- `temp/templates/tutorial_template.md`
-
-### 5. Documentation Output Agent (ドキュメント出力エージェント)
-**専門領域**: 最終ドキュメント生成、品質管理、保存
-
-**責任範囲**:
-- テンプレートと抽出情報の統合
-- Markdown形式での最終出力生成
-- 文書構造の整合性チェック
-- リンク切れチェック
-- ドキュメントカバレッジ測定
-- 指定ディレクトリへの保存
-- Git連携によるバージョン管理
-
-**入力**:
-- `temp/templates/`
-- `temp/extracted_info/`
-
-**出力**:
-- `docs/generated/architecture.md`
-- `docs/generated/api_reference.md`
-- `docs/generated/tutorial.md`
-- `logs/generation_report.md`
+**入力**: `sample/execution_results.md`  
+**出力**: `sample/quality_assessment.md`
 
 ## 🔄 ワークフロー設計
 
-### 実行順序 (順次実行)
-```mermaid
-graph TD
-    A[Configuration Agent] --> B[File Processing Agent]
-    B --> C[Code Analysis Agent]
-    C --> D[Template Generation Agent]
-    D --> E[Documentation Output Agent]
-    
-    A1[config/settings.json] --> A
-    A --> A2[temp/validated_config.json]
-    A --> A3[temp/target_files.json]
-    
-    B1[Source Files] --> B
-    A2 --> B
-    A3 --> B
-    B --> B2[temp/processed_files/]
-    B --> B3[temp/file_metadata.json]
-    
-    B2 --> C
-    B3 --> C
-    C --> C2[temp/extracted_info/]
-    
-    C2 --> D
-    A2 --> D
-    D --> D2[temp/templates/]
-    
-    D2 --> E
-    C2 --> E
-    E --> E2[docs/generated/]
-    E --> E3[logs/generation_report.md]
+### メインワークフロー
+```
+[開始] 
+   ↓
+[要件確認エージェント] → clarification_questions.md
+   ↓
+[対話管理エージェント] ← user_answers.md
+   ↓
+[追加質問判定]
+   ↓ (No)        ↓ (Yes)
+[タスク分析]    [追加質問生成] ← ループバック
+   ↓              ↓
+[実行管理]    [ユーザー回答待ち]
+   ↓
+[品質評価]
+   ↓
+[満足度判定]
+   ↓ (No)        ↓ (Yes)
+[タスク再実行] → [完了]
+   ↑_______________|
 ```
 
-### ループ実行対応設計
-1. **ファイル単位ループ**: 複数ファイル処理時は File Processing Agent から繰り返し
-2. **分割ファイルループ**: 巨大ファイル分割時は Code Analysis Agent 内でループ
-3. **エラー時再試行**: 各エージェントでエラー検出時、前段階から再実行可能
-4. **部分処理継続**: 一時ファイルによる中間状態保存で、任意の段階から再開可能
+### 実行順序
+1. **Phase 1**: 要件確認エージェント
+2. **Phase 2**: 対話管理エージェント（反復可能）
+3. **Phase 3**: タスク分析エージェント
+4. **Phase 4**: 実行管理エージェント
+5. **Phase 5**: 品質評価エージェント（反復判定）
 
-## 📊 データフロー仕様
+## 📁 データフロー仕様
 
-### 入力データフロー
+### 入力ファイル
+- **`INPUT/task.md`**: ユーザー指定の初期要件
+- **`sample/user_answers.md`**: ユーザーからの回答（手動作成）
+
+### 中間ファイル
+- **`sample/clarification_questions.md`**: 要件確認用の質問
+- **`sample/dialogue_summary.md`**: 対話履歴と確定要件
+- **`sample/additional_questions.md`**: 追加質問（必要時）
+- **`sample/task_breakdown.md`**: タスク分解結果
+- **`sample/execution_results.md`**: 実行結果レポート
+
+### 出力ファイル
+- **`sample/quality_assessment.md`**: 最終品質評価レポート
+- **実装ファイル群**: 要件に応じた各種ファイル（code/, docs/等）
+
+### ファイル仕様標準
+- **形式**: 構造化Markdown
+- **エンコーディング**: UTF-8
+- **セクション**: 明確なヘッダー構造
+- **メタデータ**: 作成日時、エージェント名、処理ステータス
+
+## 🔁 ループ実行対応設計
+
+### 対話ループ（Phase 2）
 ```
-ユーザー設定 → Configuration Agent
-├─ config/settings.json
-├─ コマンドライン引数
-└─ 環境変数
-
-ソースコード → File Processing Agent
-├─ .cs, .js, .ts, .aspx files
-├─ .md, .txt, .json, .yaml files
-└─ ディレクトリ構造
-```
-
-### 中間データフロー
-```
-temp/validated_config.json → 全エージェント
-temp/target_files.json → File Processing Agent
-temp/processed_files/ → Code Analysis Agent
-temp/file_metadata.json → Code Analysis Agent
-temp/extracted_info/ → Template Generation Agent
-temp/templates/ → Documentation Output Agent
-```
-
-### 出力データフロー
-```
-Documentation Output Agent →
-├─ docs/generated/architecture.md
-├─ docs/generated/api_reference.md
-├─ docs/generated/tutorial.md
-└─ logs/generation_report.md
-```
-
-## 📁 ファイル仕様詳細
-
-### 設定ファイル (config/settings.json)
-```json
-{
-  "targetDirectories": ["src/", "api/"],
-  "excludePatterns": ["*.test.js", "node_modules/", ".git/"],
-  "outputDirectory": "./docs/generated/",
-  "resourceLimits": {
-    "maxMemoryMB": 1024,
-    "maxExecutionMinutes": 10,
-    "maxLinesPerFile": 2000
-  },
-  "languages": ["csharp", "javascript", "typescript"],
-  "documentTypes": ["architecture", "reference", "tutorial"]
-}
+要件確認 → 質問生成 → ユーザー回答 → 追加確認判定
+    ↑                                    ↓
+    └─────── 追加質問生成 ←──────────── (Yes)
+                ↓ (No)
+           タスク分析へ
 ```
 
-### 一時ファイル構造
+### 実行ループ（Phase 4-5）
 ```
-temp/
-├─ validated_config.json      # 検証済み設定
-├─ target_files.json          # 処理対象ファイルリスト
-├─ file_metadata.json         # ファイルメタデータ
-├─ processed_files/           # 分割済みファイル群
-│  ├─ file1_part1.cs
-│  ├─ file1_part2.cs
-│  └─ ...
-├─ extracted_info/            # 抽出情報
-│  ├─ functions.json
-│  ├─ classes.json
-│  ├─ apis.json
-│  └─ dependencies.json
-└─ templates/                 # 生成テンプレート
-   ├─ architecture_template.md
-   ├─ reference_template.md
-   └─ tutorial_template.md
+タスク実行 → 結果評価 → 満足度判定
+    ↑                       ↓
+    └── タスク再実行 ←──── (不満足)
+           ↓ (満足)
+          完了
 ```
 
-## ⚡ 処理効率最適化
+### ループ制御パラメータ
+- **最大対話回数**: 5回（無限ループ防止）
+- **最大実行回数**: 3回（品質担保）
+- **中断条件**: ユーザー明示的な完了宣言
 
-### エージェント間最適化
-- **データ再利用**: 中間ファイルの効率的な読み書き
-- **メモリ管理**: 各エージェントでのメモリクリア実装
-- **並列化準備**: 将来の並列実行に備えたデータ分離設計
+## 🔧 技術アーキテクチャ
 
-### リソース制限対応
-- **メモリ監視**: Configuration Agent でのリソース監視機能
-- **分割処理**: File Processing Agent での自動分割機能
-- **時間制限**: 各エージェントでのタイムアウト制御
+### 実装方針
+- **言語**: Python（既存構成に準拠）
+- **実行方式**: コマンドライン順次実行
+- **データ交換**: ファイルベース（JSON/YAML/Markdown）
+- **エラー処理**: ログファイル + 継続実行
 
-## 🔍 品質管理機能
+### モジュール構成
+```
+code/
+├── agents/
+│   ├── requirement_clarifier.py
+│   ├── dialogue_manager.py
+│   ├── task_analyzer.py
+│   ├── execution_manager.py
+│   └── quality_evaluator.py
+├── utils/
+│   ├── file_handler.py
+│   └── workflow_controller.py
+└── main_workflow.py
+```
 
-### 各エージェントの品質チェック
-1. **Configuration Agent**: 設定値の妥当性検証
-2. **File Processing Agent**: ファイル読み込み成功率チェック
-3. **Code Analysis Agent**: 構文解析成功率、抽出情報完全性チェック
-4. **Template Generation Agent**: テンプレート構造整合性チェック
-5. **Documentation Output Agent**: 最終品質チェック、リンク切れ検証
+## 📊 エージェント間インターフェース
 
-### 統合品質メトリクス
-- ドキュメントカバレッジ率
-- 抽出情報完全性スコア
-- 処理成功率
-- エラー発生率
+### 標準化されたデータ構造
+```yaml
+# 共通メタデータ
+metadata:
+  agent_name: string
+  timestamp: datetime
+  phase: string
+  status: [pending|in_progress|completed|error]
 
-## 🚀 拡張性設計
+# 要件データ
+requirements:
+  original: string
+  clarified: string
+  questions: list
+  answers: list
 
-### 新機能追加対応
-- **新言語対応**: Code Analysis Agent の解析ロジック追加
-- **新テンプレート**: Template Generation Agent のテンプレート追加
-- **新出力形式**: Documentation Output Agent の出力形式追加
+# タスクデータ
+tasks:
+  - id: string
+    description: string
+    priority: integer
+    status: string
+    dependencies: list
+```
 
-### プラグイン対応準備
-- 各エージェントの設定ベース動作切り替え
-- 外部ツール連携のためのインターフェース設計
-- カスタムテンプレートの動的読み込み機能
+## ✅ 品質チェックポイント
 
-## ✅ 品質チェックポイント確認
-
+### 設計品質確認
 - [x] 全要件がエージェントに適切に分割されている
 - [x] 各エージェントの責任が明確に分離されている
 - [x] ワークフローが効率的に設計されている
@@ -282,31 +215,73 @@ temp/
 - [x] ループ実行が可能な構造になっている
 - [x] 将来の拡張性が考慮されている
 
-## 📝 実装ガイドライン
+### アーキテクチャ妥当性
+- **単一責任原則**: 各エージェントは1つの明確な専門領域を担当
+- **疎結合**: ファイルベースの疎結合によりエージェント独立性を確保
+- **再利用性**: 汎用的なデータ構造により他プロジェクトへの適用可能
+- **保守性**: 明確なインターフェースと標準化により保守コストを最小化
 
-### 実行順序の遵守
-1. 必ず Configuration Agent から開始
-2. 各エージェントの完了確認後に次のエージェントを実行
-3. エラー時は該当エージェントの再実行、または前段階からの再開
+## 🚀 実装優先順位
 
-### ファイル管理規則
-- temp/ ディレクトリは各実行開始時にクリア
-- logs/ ディレクトリは履歴保持のため累積保存
-- docs/generated/ は上書き保存（バージョン管理はGit連携）
+### Phase 1: 基盤構築（優先度: 高）
+1. 要件確認エージェント
+2. 基本的なファイルハンドリング
+3. ワークフロー制御基盤
 
-### エラーハンドリング
-- 各エージェントは独立したエラーハンドリングを実装
-- 部分的処理結果でも有用なドキュメント生成を優先
-- 詳細なエラーログを logs/ に出力
+### Phase 2: 対話システム（優先度: 高）
+1. 対話管理エージェント
+2. ループ制御機構
+3. ユーザーインターフェース
+
+### Phase 3: タスク処理（優先度: 中）
+1. タスク分析エージェント
+2. 実行管理エージェント
+3. エラーハンドリング
+
+### Phase 4: 品質管理（優先度: 中）
+1. 品質評価エージェント
+2. 満足度判定機構
+3. 最終レポート生成
+
+## 📈 拡張性考慮
+
+### 将来的な拡張ポイント
+- **エージェント追加**: プラグイン方式でのエージェント追加
+- **実行環境拡張**: GUI版、Web版への展開
+- **多言語対応**: 国際化対応
+- **AI統合**: LLM APIとの連携強化
+
+### 拡張可能性設計
+- 標準化されたエージェントインターフェース
+- 設定ファイルによる動的エージェント制御
+- モジュラー設計による部分更新対応
 
 ## 🎯 成功指標
 
-1. **機能性**: 全8つの機能要件を5エージェントで実現
-2. **効率性**: 最小限のエージェント数での実装
-3. **保守性**: 単一責任原則に基づく明確な分離
-4. **拡張性**: 新言語・新機能追加時の影響範囲最小化
-5. **信頼性**: エラー時の継続・再開機能
+### 定量的指標
+- **処理時間**: 各フェーズ5分以内
+- **ファイル生成**: 最大3ファイル/実行
+- **エラー率**: 5%以下
+
+### 定性的指標
+- **ユーザー満足度**: 要件実現度80%以上
+- **保守性**: 新規エージェント追加1日以内
+- **理解容易性**: ドキュメント参照のみで理解可能
 
 ---
-**設計完了**: 2025年7月23日  
-**次フェーズ**: 各エージェントのプロンプト詳細設計
+
+## 📋 設計完了チェックリスト
+- [x] エージェント構成が要件分析結果を網羅
+- [x] 各エージェントの責任範囲が明確に定義
+- [x] ワークフローの実行順序が論理的に設計
+- [x] データフローの入出力仕様が詳細化
+- [x] ループ実行メカニズムが適切に設計
+- [x] 拡張性と保守性が十分考慮
+- [x] 技術制約（Python、ファイルベース）に準拠
+- [x] 運用制約（対話処理、段階実行）に対応
+
+**設計完了日**: 2025年7月24日  
+**次のアクション**: 各エージェントの詳細設計・実装フェーズへ移行
+
+---
+*本設計は要件分析レポートに基づく最適化されたエージェント・アーキテクチャです。実装時の詳細調整は各エージェント設計時に実施予定です。*

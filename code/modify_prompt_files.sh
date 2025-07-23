@@ -67,11 +67,17 @@ for prompt_file in "${PROMPT_FILES[@]}"; do
         # 1. 本番環境用ファイルのパスを作成
         github_file="$GITHUB_DIR/${agent_name}_prompt.prompt.md"
         
-        # 2. 元ファイルの内容を読み込み、front matterを追加して本番環境用ファイルを作成
-        {
-            echo "$FRONT_MATTER"
-            cat "$prompt_file"
-        } > "$github_file"
+        # 2. 元ファイルの内容を読み込み、front matterの重複をチェック
+        if head -n 3 "$prompt_file" | grep -q "^---$" && head -n 3 "$prompt_file" | grep -q "mode: agent"; then
+            echo "  front matterが既に存在するため、そのまま使用します"
+            cp "$prompt_file" "$github_file"
+        else
+            # front matterを追加して本番環境用ファイルを作成
+            {
+                echo "$FRONT_MATTER"
+                cat "$prompt_file"
+            } > "$github_file"
+        fi
         
         echo "  本番環境用ファイルを作成: $(basename "$github_file")"
     fi

@@ -69,9 +69,16 @@ foreach ($promptFile in $PromptFiles) {
         # 1. 本番環境用ファイルのパスを作成
         $githubFile = Join-Path $GitHubDir "${agentName}_prompt.prompt.md"
         
-        # 2. 元ファイルの内容を読み込み、front matterを追加して本番環境用ファイルを作成
+        # 2. 元ファイルの内容を読み込み、front matterの重複をチェック
         $originalContent = Get-Content -Path $fullPath -Raw -Encoding UTF8
-        $newContent = $FrontMatter + $originalContent
+        
+        if ($originalContent.TrimStart().StartsWith("---`nmode: agent`n---")) {
+            Write-Host "  front matterが既に存在するため、そのまま使用します"
+            $newContent = $originalContent
+        } else {
+            # front matterを追加して本番環境用ファイルを作成
+            $newContent = $FrontMatter + $originalContent
+        }
         
         # UTF8 (BOM無し) で保存
         [System.IO.File]::WriteAllText($githubFile, $newContent, [System.Text.UTF8Encoding]::new($false))

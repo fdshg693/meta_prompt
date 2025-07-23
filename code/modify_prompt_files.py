@@ -91,8 +91,13 @@ mode: agent
             with open(prompt_file, 'r', encoding='utf-8') as f:
                 original_content = f.read()
             
-            # front matterを先頭に追加してGithub Copilot Chat用の内容を作成
-            new_content = front_matter + original_content
+            # front matterがすでに存在するかチェック
+            if original_content.strip().startswith("---\nmode: agent\n---"):
+                print(f"  ℹ️  front matterが既に存在するため、スキップします")
+                new_content = original_content
+            else:
+                # front matterを先頭に追加してGithub Copilot Chat用の内容を作成
+                new_content = front_matter + original_content
             
             # Github Copilot Chat用ファイルに書き込み
             with open(github_file, 'w', encoding='utf-8') as f:
