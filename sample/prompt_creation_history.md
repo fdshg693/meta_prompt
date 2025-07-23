@@ -1,24 +1,52 @@
-# プロンプト作成履歴
+# プロンプト作成進捗履歴
 
-## 作成状況
-- [x] 要求分析エージェント (Requirements Analyzer Agent)
-- [x] タスク分割エージェント (Task Breakdown Agent)
-- [x] 実行計画エージェント (Execution Planning Agent)
-- [x] 実行エージェント (Execution Agent)
-- [x] 進捗管理エージェント (Progress Management Agent)
+## 作成済みプロンプト
 
-**全エージェントのプロンプト作成完了！**
+### 1. タスク分析エージェント (Task Analyzer Agent) ✅
+- **作成日**: 2025年7月23日
+- **ファイルパス**: `sample/prompts/task_analyzer_prompt.md`
+- **ステータス**: 完了
+- **説明**: ユーザー入力の構造化分析と情報不足の特定を行うプロンプト
 
-## 作成済みファイル
-- [x] copilot-instructions.md - 共通指示書
-- [x] variables.yaml - 変数定義ファイル
+### 2. 情報収集エージェント (Information Collector Agent) ✅
+- **作成日**: 2025年7月23日
+- **ファイルパス**: `sample/prompts/information_collector_prompt.md`
+- **ステータス**: 完了
+- **説明**: ユーザーとの対話による情報収集と整理を行うプロンプト
 
-## 作成ログ
-- 2025-07-23: 共通ファイル作成完了（copilot-instructions.md, variables.yaml, prompt_creation_history.md）
-- 2025-07-23: 要求分析エージェント プロンプト作成完了（requirements_analyzer_prompt.md）
-- 2025-07-23: タスク分割エージェント プロンプト作成完了（task_breakdown_prompt.md）
-- 2025-07-23: 実行計画エージェント プロンプト作成完了（execution_planning_prompt.md）
-- 2025-07-23: 実行エージェント プロンプト作成完了（execution_agent_prompt.md）
-- 2025-07-23: 進捗管理エージェント プロンプト作成完了（progress_management_agent_prompt.md）
+## 未作成プロンプト
 
-**🎉 全エージェントのプロンプト作成が完了しました！**
+### 3. エージェント選定エージェント (Agent Selector Agent) ✅
+- **作成日**: 2025年7月23日
+- **ファイルパス**: `sample/prompts/agent_selector_prompt.md`
+- **ステータス**: 完了
+- **説明**: タスクに最適な実行エージェントの選定と組み合わせを行うプロンプト
+
+### 4. 共通プロンプト生成エージェント (Common Prompt Generator Agent) ✅
+- **作成日**: 2025年7月23日
+- **ファイルパス**: `sample/prompts/common_prompt_generator_prompt.md`
+- **ステータス**: 完了
+- **説明**: 全エージェント共通のベースプロンプト生成を行うプロンプト
+
+### 5. 個別プロンプト生成エージェント (Individual Prompt Generator Agent) ✅
+- **作成日**: 2025年7月23日
+- **ファイルパス**: `sample/prompts/individual_prompt_generator_prompt.md`
+- **ステータス**: 完了
+- **説明**: 各実行エージェント用の専用プロンプト生成を行うプロンプト
+
+## 共通ファイル作成状況
+
+### ✅ 作成済み
+- `sample/copilot-instructions.md` - 全エージェント共通指示事項
+- `sample/variables.yaml` - プロンプト生成システム変数定義
+
+## 完了状況
+🎉 **全エージェントプロンプト作成完了** 🎉
+
+すべてのエージェント（5個）のプロンプトが正常に作成されました。
+プロンプト生成システムの基盤構築が完了し、実際のタスク処理を開始できます。
+
+## 実行履歴
+- **1回目**: 2025年7月23日 - 共通ファイル2個 + タスク分析エージェントプロンプト作成
+- **2回目**: 2025年7月23日 - 情報収集エージェント + エージェント選定エージェント + 共通プロンプト生成エージェント作成
+- **3回目**: 2025年7月23日 - 個別プロンプト生成エージェントプロンプト作成（完了）

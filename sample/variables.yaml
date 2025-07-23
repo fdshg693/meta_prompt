@@ -1,33 +1,44 @@
-# 変数定義ファイル
+# プロンプト生成システム変数定義
 
-# プロジェクト設定
-project_root: "{{project_root}}"                    # プロジェクトのルートディレクトリパス
-task_type: "{{task_type}}"                          # タスクタイプ (programming|bugfix|feature)
-max_retry_count: "{{max_retry_count}}"              # 最大リトライ回数 (デフォルト: 3)
+## 実行制御変数
+# run_number: 1  # 現在の実行回数（ループ実行対応）
+max_files_per_execution: 3  # 一回の実行で作成可能な最大ファイル数
 
-# 実行制御
-run_number: "{{run_number}}"                        # 現在の実行回数 (1から開始)
-max_execution_time: "{{max_execution_time}}"        # 最大実行時間 (分)
-auto_continue: "{{auto_continue}}"                  # 自動継続フラグ (true|false)
+## パス設定変数
+# workspace_root: "c:\\CodeStudy\\meta_prompt"
+input_directory: "INPUT"
+sample_directory: "sample"
+output_directory: "OUTPUT"
+prompts_directory: "sample\\prompts"
 
-# ユーザー設定
-user_skill_level: "{{user_skill_level}}"            # ユーザースキルレベル (beginner|intermediate|advanced)
-detailed_logging: "{{detailed_logging}}"            # 詳細ログ出力フラグ (true|false)
-progress_notification: "{{progress_notification}}"  # 進捗通知フラグ (true|false)
+## ファイル名変数
+task_input_file: "task.md"
+task_analysis_result: "task_analysis_result.md"
+questions_for_user: "questions_for_user.md"
+collected_information: "collected_information.md"
+selected_agents_plan: "selected_agents_plan.md"
+common_prompt: "common_prompt.md"
+prompt_creation_history: "prompt_creation_history.md"
+execution_history: "execution_history.md"
 
-# ファイルパス設定
-input_directory: "{{input_directory}}"              # 入力ディレクトリ (デフォルト: input/)
-output_directory: "{{output_directory}}"            # 出力ディレクトリ (デフォルト: output/)
-state_directory: "{{state_directory}}"              # 状態ディレクトリ (デフォルト: state/)
-logs_directory: "{{logs_directory}}"                # ログディレクトリ (デフォルト: logs/)
-reports_directory: "{{reports_directory}}"          # レポートディレクトリ (デフォルト: reports/)
+## プロジェクト設定変数
+project_name: "GitHub Copilot Chat用プロンプト自動生成システム"
+target_platform: "GitHub Copilot Chat"
+output_format: "Markdown"
 
-# 処理設定
-step_size_preference: "{{step_size_preference}}"    # ステップサイズ設定 (small|medium|large)
-error_tolerance: "{{error_tolerance}}"              # エラー許容レベル (strict|normal|lenient)
-code_quality_level: "{{code_quality_level}}"        # コード品質レベル (basic|standard|high)
+## 品質基準変数
+min_clarity_score: 8  # 10点満点での明確性最低基準
+consistency_check: true  # 一貫性チェックの有効/無効
+validation_required: true  # 妥当性検証の必須/任意
 
-# 出力設定
-report_language: "{{report_language}}"              # レポート言語 (ja|en)
-include_code_comments: "{{include_code_comments}}"  # コードコメント含有フラグ (true|false)
-summary_detail_level: "{{summary_detail_level}}"    # サマリー詳細レベル (brief|detailed|comprehensive)
+## エージェント名変数
+task_analyzer: "タスク分析エージェント"
+info_collector: "情報収集エージェント"  
+agent_selector: "エージェント選定エージェント"
+common_prompt_generator: "共通プロンプト生成エージェント"
+individual_prompt_generator: "個別プロンプト生成エージェント"
+
+## 実行モード変数
+debug_mode: false  # デバッグモードの有効/無効
+verbose_output: true  # 詳細出力の有効/無効
+auto_continue: false  # 自動継続の有効/無効
